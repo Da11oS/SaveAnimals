@@ -22,7 +22,6 @@ public class Camera : MonoBehaviour
         _dumpingTarget = _playerPosition;
         _grid = FindObjectOfType<Grid>();
         _positionZ = transform.position.z;
-        Debug.Log(Screen.height / 2);
     }
 
     // Update is called once per frame

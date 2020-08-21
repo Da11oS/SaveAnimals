@@ -7,7 +7,7 @@ using Terrain;
 
 public class TerraineGenerator : MonoBehaviour
 {
-    public int  Width;
+    public int Width;
     public int Frequency, Noise;
     public List<int> HeightMap { get  => _heightMap; }
     public GroundTile GroundTile;
@@ -16,6 +16,10 @@ public class TerraineGenerator : MonoBehaviour
     [SerializeField]
     private TileBase _grass;
     private List<int> _heightMap;
+    [SerializeField]
+    private int _energyPointFriqency;
+    [SerializeField]
+    private GameObject _energyPoint;
 
     public void Generate()
     {
@@ -48,6 +52,11 @@ public class TerraineGenerator : MonoBehaviour
                 groundHeight = 10;
             }
             _heightMap.Add(groundHeight);
+
+            if(x % _energyPointFriqency == 0)
+            {
+                EnergyPointsGenerate(groundHeight, x);
+            }
         }
         int i = 0;
         foreach (var height in _heightMap)
@@ -59,11 +68,28 @@ public class TerraineGenerator : MonoBehaviour
             }
             i++;
         }
+      
+    }
+    public void EnergyPointsGenerate(int height, int width)
+    {
+            Vector3Int position = new Vector3Int(width, height + 2, 0);
+            Instantiate(_energyPoint, Tilemap.CellToWorld(position), Quaternion.identity);
     }
     public void ClearTerraine()
     {
         _heightMap.Clear();
         Tilemap.ClearAllTiles();
+#if UNITY_EDITOR
+        foreach(var child in FindObjectsOfType<EnergyRecovery>())
+        {
+            DestroyImmediate(child.gameObject);
+        }
+#else
+          foreach(var child in FindObjectsOfType<EnergyRecovery>())
+        {
+            Destroy(child.gameObject);
+        }
+#endif
     }
 }
 namespace Terrain
@@ -109,117 +135,217 @@ namespace Terrain
     [CreateAssetMenu(menuName = "Ground Tile")]
     public class GroundTile : ScriptableObject
     {
-        public TileBase Left, Right, Top, Bottom, TopLeft, TopRight, BottomRight, BottomLeft, Solo, HillRightBottom, HillRight, HillLeft, HillleftBottom;
-        public TileBase[] Tiles = new TileBase[8];
-        public Vector2Int[] TileIndexes = new Vector2Int[8];
-        public GroundTile()
+        public TileBase Left, Right, Top, Bottom, MiddleTop, MiddleBottom, Middle, TopLeft, TopRight, BottomRight, BottomLeft, Solo, HillRightBottom, HillRight, HillLeft, HillleftBottom, Center;
+        public TileBase[] Tiles;
+       
+    }
+
+    public class CustomArray<T>
+    {
+        public T[] Array;
+        private int _length;
+        public int Length { get => _length; }
+
+        public CustomArray(T[] array)
         {
-            for (int x = 0; x < 3; x++)
+            _length = array.Length;
+
+            for (int i = 0; i < _length; i++)
             {
-                for (int y = 0; y < 3; y++)
-                {
-                    TileIndexes[x + y] = new Vector2Int(x - 1, y - 1);
-                }
+                Array[i] = array[i];
             }
         }
+        public CustomArray(int length)
+        {
+            _length = length;
+
+            for (int i = 0; i < _length; i++)
+            {
+                Array[i] = default;
+            }
+        }
+        public T this[int index]
+        {
+            get => Array[index];
+        }
+
+        public void SetArrayObject(int index, T value)
+        {
+            Array[index] = value;
+        }
+
     }
+
     public class TerrainRenderar : MonoBehaviour
     {
         public List<int> HeightMap;
-        public GroundTile Tiles;
+        public GroundTile GroundTile;
         public Tilemap Tilemap;
+    
+        public int ExistsLength;
+        public List<CustomArray<bool>> Exists;
+        public int Length;
+        private bool[] _tempExists;
         public TerrainRenderar(List<int> heightMap, GroundTile groundTile, Tilemap tilemap)
         {
+            Length = 4;
             HeightMap = heightMap;
-            Tiles = groundTile;
+            GroundTile = groundTile;
             Tilemap = tilemap;
-
+            _tempExists = new bool[Length];
+            for (int i = 0; i < Length; i++)
+            {
+                _tempExists = default;
+            }
+            Plunk(0);
+            ExistsLength = Exists.Count;
+            GroundTile.Tiles = new TileBase[ExistsLength];
         }
         public void Render()
         {
-            bool[] isOtherTiles = new bool [8];
-
-            Vector3Int tilePos;
-
             for (int i = 0; i < HeightMap.Count; i++)
-             {
+            {
                 for (int j = HeightMap[i]; j >= 0; j--)
                 {
-                    tilePos = new Vector3Int(i, j, 0);
-                    for (int x = 0; x < 3; x++)
+                    SetTile(new Vector3Int(i, j, 0));
+                }
+            }
+       
+            void SetTile(Vector3Int currentTilePosition)
+            {
+                bool[] currentTileExists = new bool[Length];
+               
+                currentTileExists[0] = IsNotNullTile(currentTilePosition, Vector3Int.up);
+                currentTileExists[1] = IsNotNullTile(currentTilePosition, Vector3Int.right);
+                currentTileExists[2] = IsNotNullTile(currentTilePosition, Vector3Int.down);
+                currentTileExists[3] = IsNotNullTile(currentTilePosition, Vector3Int.up);
+
+                for (int i = 0; i < ExistsLength; i++)
+                {
+                    bool isSame = true;
+                    for (int j = 0; j < Length; j++ )
                     {
-                        for (int y = 0; y < 3; y++)
+                        if(currentTileExists[j] != Exists[i].Array[j])
                         {
-                            isOtherTiles[x+y] = !IsNotNullTile(tilePos, new Vector3Int(x - 1, y - 1,0));
+                            isSame = false;
+                            break;
                         }
                     }
-
-                    SetTiles(0);
-                }
-             }
-
-            bool IsNotNullTile (Vector3Int pos, Vector3Int shift)
-            {
-                return Tilemap.GetTile(pos + shift) == null;
-            }
-
-            void SetTiles(int index)
-            {
-                
-                
-                if (index > 7)
-                {
-                    return;
-                }
-                else
-                {
-                    if (isOtherTiles[index])
+                    if(isSame)
                     {
-                        Tilemap.SetTile(tilePos, Tiles.Tiles[index]);
-                        SetTiles(index + 1 );
-                    }
-                    else
-                    {
-                        SetTiles(index + 1);
+                        Tilemap.SetTile(currentTilePosition, GroundTile.Tiles[i]);
                     }
                 }
+
             }
-
         }
-    }
-
-    public class TileType
-    {
-        public bool[,] GridLogicalePosition;
-        public int Width, Height;
-
-        public TileType(int width, int height)
+        public void Plunk(int index)
         {
-            Width = width;
-            Height = height;
-            GridLogicalePosition = new bool[Width, Height];
-           for(int y= 0; y< height; y++)
-           {
-                for(int x = 0; x < Width; x++)
-                {
-                    GridLogicalePosition[x, y] = false;
-                }
-           }
-
-        }
-
-        public void SetTileTypes(Vector3Int pos)
-        {
-            for(int i = -1; i < 1; i++)
+            if (index >= Length)
             {
-                for(int j = -1; j < 1; j++)
-                {
-                    GridLogicalePosition[pos.x + j, pos.y + i] = true;
-                }
+                Exists.Add(new CustomArray<bool>(_tempExists));
+                return;
             }
-        }
 
+            for (int i = 0; i <= 1; i++)
+            {
+                if (i == 0)
+                {
+                    _tempExists[index] = false;
+                }
+                else _tempExists[index] = true;
+                Plunk(index + 1);
+            }
+
+        }
+        bool IsNotNullTile(Vector3Int pos, Vector3Int shift)
+        {
+            return Tilemap.GetTile(pos + shift) == null;
+        }
+        //public void Render()
+        //{
+        //    bool[] isOtherTiles = new bool [8];
+
+        //    Vector3Int tilePos;
+        //    bool isLeft, isRight, isTop, isBottom; 
+        //    for (int i = 0; i < HeightMap.Count; i++)
+        //     {
+        //        for (int j = HeightMap[i]; j >= 0; j--)
+        //        {
+        //            tilePos = new Vector3Int(i, j, 0);
+        //            isLeft = IsNotNullTile(tilePos, Vector3Int.left);
+        //            isRight = IsNotNullTile(tilePos, Vector3Int.right);
+        //            isTop = IsNotNullTile(tilePos, Vector3Int.up);
+        //            isBottom = IsNotNullTile(tilePos, Vector3Int.down);
+        //            if (isLeft)
+        //            {
+        //                if(isRight)
+        //                {
+        //                    if(isTop)
+        //                    {
+        //                        if(isBottom)
+        //                        {
+
+        //                        }
+        //                        else
+        //                        {
+
+        //                        }
+        //                    }
+        //                    else if(isBottom)
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+
+        //                    }
+        //                }
+        //                else if(isTop)
+        //                {
+        //                    if (isBottom)
+        //                    {
+
+        //                    }
+        //                    else if (isBottom)
+        //                    {
+
+        //                    }
+        //                    else
+        //                    {
+
+        //                    }
+        //                }
+        //                else if(isBottom)
+        //                {
+
+        //                }
+        //                Tilemap.SetTile(tilePos, Tiles.Left);
+        //            }
+        //            else if(isLeft)
+        //            {
+        //                Tilemap.SetTile(tilePos, Tiles.Middle);
+        //            }
+        //            else if(isTop)
+        //            {
+
+        //            }
+        //            else if(isBottom)
+        //            {
+
+        //            }
+        //        }
+        //     }
+
+
+        //    bool IsNotNullTile (Vector3Int pos, Vector3Int shift)
+        //    {
+        //        return Tilemap.GetTile(pos + shift) == null;
+        //    }
+
+        //}
     }
 }
+
 
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Terraine
+namespace Terrain
 {
     public class Node
     {

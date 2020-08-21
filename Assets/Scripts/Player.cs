@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _groundRadius;
     [SerializeField]
+    private float _rotationLerpSpeed;
+    [SerializeField]
     private LayerMask _groundMask;
     private Vector2 _runDirection;
     
@@ -25,14 +27,15 @@ public class Player : MonoBehaviour
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Run(_runDirection);
     }
     // Update is called once per frame
-    public void Run(Vector2 direction)
+    public void Run(Vector3 direction)
     {
         transform.Translate(direction * _speed * Time.deltaTime);
+      //  _rigidbody.velocity = transform.right * _speed * Time.deltaTime;
     }
     public void Jump(Vector2 direction)
     {
@@ -42,10 +45,13 @@ public class Player : MonoBehaviour
             _rigidbody.AddForce(direction * _impulse, ForceMode2D.Impulse);
         }
     }
-    public void Lerp(Vector2 to)
+    public void LerpRunDirection(Vector2 to)
     {
-
         _runDirection =  Vector2.Lerp(_runDirection, to, LerpSpeed);
+    }
+    public void LerpRotation(Quaternion to)
+    {
+        transform.rotation = Quaternion.Lerp(transform.rotation, to, _rotationLerpSpeed * Time.deltaTime);
     }
     public Vector3 GetRunDirection()
     {

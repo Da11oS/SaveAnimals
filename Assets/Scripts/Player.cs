@@ -18,24 +18,29 @@ public class Player : MonoBehaviour
     private float _rotationLerpSpeed;
     [SerializeField]
     private LayerMask _groundMask;
+
     private Vector2 _runDirection;
+    private Energy _energyBar;
     
-    void Start()
+    private void Start()
     {
         if(GetComponent<Rigidbody2D>()!=null)
         _rigidbody = GetComponent<Rigidbody2D>();
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
+        _energyBar = FindObjectOfType<Energy>();
+        _runDirection = Vector3.right;
     }
 
     private void FixedUpdate()
     {
         Run(_runDirection);
+        LerpRotation(new Quaternion(0, 0, 0, 1));
+
     }
-    // Update is called once per frame
     public void Run(Vector3 direction)
     {
         transform.Translate(direction * _speed * Time.deltaTime);
-      //  _rigidbody.velocity = transform.right * _speed * Time.deltaTime;
+      //  _rigidbody.velocity = Vector3.right * _speed * Time.deltaTime;
     }
     public void Jump(Vector2 direction)
     {
@@ -57,10 +62,22 @@ public class Player : MonoBehaviour
     {
         return _runDirection;
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(!MoveButton.IsClick)
+        {
+            LerpRunDirection(Vector3.right);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.GetComponent<Rocket>() != null)
+        {
+            _energyBar.ReduceEnergy(0.1f);
+        }
+    }
     private bool IsGround()
     {
-        Debug.DrawRay(transform.position + Vector3.down - Vector3.right * 0.75f, Vector2.right);
-       // return Physics2D.OverlapBox(transform.position + Vector3.down, new Vector2(1.5f,0.3f), _groundMask);
         return Physics2D.OverlapCircle(transform.position + Vector3.down, _groundRadius, _groundMask);
     }
 }

@@ -35,7 +35,7 @@ public class Camera : MonoBehaviour
     private void Dumping()
     {
         _dumpingTarget = _playerPosition; //+ DumpingForce;
-        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - _grid.cellSize.y/2 + Screen.height / 2000, _maxHeight);
+        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - _grid.cellSize.y / 2 + Screen.height / 2000, _maxHeight);
         transform.position = Vector3.Lerp(transform.position, new Vector3(_dumpingTarget.x, _dampingY, _positionZ), DumpingSpeed * Time.deltaTime);
     }
 

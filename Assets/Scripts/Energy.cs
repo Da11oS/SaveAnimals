@@ -41,6 +41,11 @@ public class Energy : MonoBehaviour
     {
         _energy = StartEnergy;
     }
+    public void ReduceEnergy(float value)
+    {
+        if(value < 1)
+        _energy -= value;
+    }
 
 
 }

@@ -61,10 +61,13 @@ public class TerraineGenerator : MonoBehaviour
         int i = 0;
         foreach (var height in _heightMap)
         {
-            Tilemap.SetTile(new Vector3Int(i, height, 0), _grass);
-            for (int j = height - 1; j >= 0; j--)
+            if (height >= 0)
             {
-                Tilemap.SetTile(new Vector3Int(i, j, 0), _grass);
+            Tilemap.SetTile(new Vector3Int(i, height, 0), _grass);
+                for (int j = height; j >= 0; j--)
+                {
+                    Tilemap.SetTile(new Vector3Int(i, j, 0), _grass);
+                }
             }
             i++;
         }
@@ -184,11 +187,10 @@ namespace Terrain
     
         public int ExistsLength;
         public List<CustomArray<bool>> Exists;
-        public int Length;
-        private bool[] _tempExists;
+        public const int Length = 4;
+		private bool[] _tempExists;
         public TerrainRenderar(List<int> heightMap, GroundTile groundTile, Tilemap tilemap)
         {
-            Length = 4;
             HeightMap = heightMap;
             GroundTile = groundTile;
             Tilemap = tilemap;

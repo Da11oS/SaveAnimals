@@ -4,38 +4,31 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-
     public float LerpSpeed;
     private Rigidbody2D _rigidbody;
-    [SerializeField]
-    private float _speed;
-    [SerializeField]
-    private float _impulse;
-    [SerializeField]
-    private float _groundRadius;
-    [SerializeField]
-    private float _rotationLerpSpeed;
-    [SerializeField]
-    private LayerMask _groundMask;
+    [SerializeField] private float _speed;
+    [SerializeField] private float _impulse;
+    [SerializeField] private float _groundRadius;
+    [SerializeField] private float _rotationLerpSpeed;
+    [SerializeField] private LayerMask _groundMask;
+    public Vector2 RunDirection
+    {
+        get; private set;
+    }
 
-    private Vector2 _runDirection;
-    private Energy _energyBar;
-    
     private void Start()
     {
         if(GetComponent<Rigidbody2D>()!=null)
         _rigidbody = GetComponent<Rigidbody2D>();
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
-        _energyBar = FindObjectOfType<Energy>();
-        _runDirection = Vector3.right;
+        RunDirection = Vector3.right;
+    
     }
 
     private void FixedUpdate()
     {
-        Run(_runDirection);
+        Run(RunDirection);
         LerpRotation(new Quaternion(0, 0, 0, 1));
-
     }
     public void Run(Vector3 direction)
     {
@@ -52,7 +45,7 @@ public class Player : MonoBehaviour
     }
     public void LerpRunDirection(Vector2 to)
     {
-        _runDirection =  Vector2.Lerp(_runDirection, to, LerpSpeed);
+        RunDirection =  Vector2.Lerp(RunDirection, to, LerpSpeed);
     }
     public void LerpRotation(Quaternion to)
     {
@@ -60,8 +53,9 @@ public class Player : MonoBehaviour
     }
     public Vector3 GetRunDirection()
     {
-        return _runDirection;
+        return RunDirection;
     }
+  
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(!MoveButton.IsClick)
@@ -69,13 +63,7 @@ public class Player : MonoBehaviour
             LerpRunDirection(Vector3.right);
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.GetComponent<Rocket>() != null)
-        {
-            _energyBar.ReduceEnergy(0.1f);
-        }
-    }
+
     private bool IsGround()
     {
         return Physics2D.OverlapCircle(transform.position + Vector3.down, _groundRadius, _groundMask);

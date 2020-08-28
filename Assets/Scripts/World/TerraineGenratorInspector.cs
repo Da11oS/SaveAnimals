@@ -9,23 +9,24 @@ public class TerraineGenratorInspector : Editor
 {
     public override void OnInspectorGUI()
     {
+
         TerraineGenerator target = (TerraineGenerator)base.target;
-        TerrainRenderar TerrainRenderar;
+        TerrainRenderar terrainRenderar;
+        HeightMap heightMap = new HeightMap(target.Width);
         base.OnInspectorGUI();
         if(GUILayout.Button("Generate"))
         {
-            target.Generate();
-            TerrainRenderar = new TerrainRenderar(target.HeightMap, target.GroundTile, target.Tilemap);
+            heightMap = target.Generate();
         }
 
         if (GUILayout.Button("Render"))
         {
-            TerrainRenderar = new TerrainRenderar(target.HeightMap, target.GroundTile, target.Tilemap);
-            TerrainRenderar.Render();
+            terrainRenderar = new TerrainRenderar(target.GroundTile, target.Tilemap);
+            terrainRenderar.Render(heightMap);
         }
         if (GUILayout.Button("Clear"))
         {
-            target.ClearTerraine();
+            target.ClearTerraine(heightMap);
         }
     }
 }

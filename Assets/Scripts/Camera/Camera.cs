@@ -7,7 +7,20 @@ public class Camera : MonoBehaviour
     public float DumpingSpeed;
     public Player Player;
     public Vector3 DumpingForce;
-
+    public static float Width
+    {
+        get
+        {
+            return Screen.width * 0.00593f;
+        }
+    }
+    public static float Height
+    {
+        get
+        {
+            return Screen.height * 0.00593f;
+        }
+    }
     private Vector3 _playerPosition;
     private Vector3 _dumpingDirection;
     private Vector3 _dumpingTarget;
@@ -28,14 +41,14 @@ public class Camera : MonoBehaviour
     void Update()
     {
             _playerPosition = Player.transform.position;
-             DumpingForce = Player.GetRunDirection();
+            DumpingForce = Player.GetRunDirection();
             Dumping();
     }
 
     private void Dumping()
     {
         _dumpingTarget = _playerPosition; //+ DumpingForce;
-        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - _grid.cellSize.y / 2 + Screen.height / 2000, _maxHeight);
+        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - 2 * _grid.cellSize.y + Height / 2, _maxHeight);
         transform.position = Vector3.Lerp(transform.position, new Vector3(_dumpingTarget.x, _dampingY, _positionZ), DumpingSpeed * Time.deltaTime);
     }
 

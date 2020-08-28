@@ -5,12 +5,12 @@ using UnityEngine;
 public class Rocket : MonoBehaviour
 {
     [SerializeField] private float _speed;
-    private GenerateOfObstacles _generator;
+    private ObstaclesGenerator _generator;
     private GameObject _camera;
     private GameObject _warning;
     private void Start()
     {
-        _generator = FindObjectOfType<GenerateOfObstacles>();
+        _generator = FindObjectOfType<ObstaclesGenerator>();
         _camera = FindObjectOfType<Camera>().gameObject;
         Vector3 generatePosition = new Vector3(_generator.WarningTransform.position.x, transform.position.y);
         _warning = Instantiate(_generator.WarningInstance, generatePosition, _generator.WarningInstance.transform.rotation, _camera.gameObject.transform);

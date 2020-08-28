@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GenerateOfObstacles : MonoBehaviour
+public class ObstaclesGenerator : MonoBehaviour
 {
     public Transform WarningTransform;
     public GameObject WarningInstance;
@@ -27,7 +27,6 @@ public class GenerateOfObstacles : MonoBehaviour
 
     IEnumerator Generate()
     {
-        
         while (true)
         {
             _reduxTime = _time + Random.Range(_redaxMinTime, _redaxMaxTime);

@@ -9,20 +9,22 @@ public class TerraineGenerator : MonoBehaviour
 {
     public int Width;
     public int Frequency, Noise;
-    public List<int> HeightMap { get  => _heightMap; }
     public GroundTile GroundTile;
     public Tilemap Tilemap;
 
     [SerializeField]
     private TileBase _grass;
-    private List<int> _heightMap;
     [SerializeField]
     private int _energyPointFriqency;
     [SerializeField]
     private GameObject _energyPoint;
-
-    public void Generate()
+    GameObject _checkpointsParents;
+    public HeightMap Generate()
     {
+        HeightMap heightMap = new HeightMap(Width);
+        _checkpointsParents = new GameObject("Checkpoints");
+        _checkpointsParents.transform.position = Vector3.zero;
+
         int groundHeight = 0;
         int groundZeroCount = 0;
         int groundOver10Count = 0;
@@ -51,42 +53,38 @@ public class TerraineGenerator : MonoBehaviour
                 groundOver10Count = 0;
                 groundHeight = 10;
             }
-            _heightMap.Add(groundHeight);
+            heightMap[x] = groundHeight;
 
             if(x % _energyPointFriqency == 0)
             {
-                EnergyPointsGenerate(groundHeight, x);
+                EnergyPointsGenerate(groundHeight, x, _checkpointsParents.transform);
             }
         }
-        int i = 0;
-        foreach (var height in _heightMap)
+        for (int i = 0; i < Width; i++)//var height in _heightMap)
         {
-            if (height >= 0)
+            if (heightMap[i] >= 0)
             {
-            Tilemap.SetTile(new Vector3Int(i, height, 0), _grass);
-                for (int j = height; j >= 0; j--)
+                Tilemap.SetTile(new Vector3Int(i, heightMap[i], 0), _grass);
+                for (int j = heightMap[i]; j >= 0; j--)
                 {
                     Tilemap.SetTile(new Vector3Int(i, j, 0), _grass);
                 }
             }
-            i++;
         }
+        return heightMap;
       
     }
-    public void EnergyPointsGenerate(int height, int width)
+    public void EnergyPointsGenerate(int height, int width, Transform parent)
     {
             Vector3Int position = new Vector3Int(width, height + 2, 0);
-            Instantiate(_energyPoint, Tilemap.CellToWorld(position), Quaternion.identity);
+            Instantiate(_energyPoint, Tilemap.CellToWorld(position), Quaternion.identity, parent);
     }
-    public void ClearTerraine()
+    public void ClearTerraine(HeightMap heightMap)
     {
-        _heightMap.Clear();
+        heightMap.Clear();
         Tilemap.ClearAllTiles();
 #if UNITY_EDITOR
-        foreach(var child in FindObjectsOfType<EnergyRecovery>())
-        {
-            DestroyImmediate(child.gameObject);
-        }
+            DestroyImmediate(_checkpointsParents);
 #else
           foreach(var child in FindObjectsOfType<EnergyRecovery>())
         {
@@ -101,14 +99,16 @@ namespace Terrain
     {
         private int _count { set => _heights.Sum(); }
         private int _width;
-        private List<int> _heights;
+        private int[] _heights;
 
-        public List<int> Heights { get => _heights; }
+        public int[] Heights { get => _heights; }
         public int MaxHeight { get => _heights.Max(); }
-        public int Length { get => _heights.Count; }
+        public int Length { get => _heights.Length; }
+        public int Width { get => _width; }
         public HeightMap(int width)
         {
             _width = width;
+            _heights = new int[_width];
         }
         public int this[int index]
         {
@@ -125,15 +125,8 @@ namespace Terrain
         }
         public void Clear()
         {
-            if(_heights.Count > 0 )
-            _heights.Clear();
-        }
-        public void Add(int value)
-        {
-            _heights.Add(value);
-        }
-
-    
+            _heights = null;
+        }    
     }
     [CreateAssetMenu(menuName = "Ground Tile")]
     public class GroundTile : ScriptableObject
@@ -152,9 +145,11 @@ namespace Terrain
         public CustomArray(T[] array)
         {
             _length = array.Length;
+            Array = new T[_length];
 
             for (int i = 0; i < _length; i++)
             {
+                Array[i] = default;
                 Array[i] = array[i];
             }
         }
@@ -181,33 +176,32 @@ namespace Terrain
 
     public class TerrainRenderar : MonoBehaviour
     {
-        public List<int> HeightMap;
         public GroundTile GroundTile;
         public Tilemap Tilemap;
     
-        public int ExistsLength;
+        public int ExistsLength { get => Exists.Count; }
         public List<CustomArray<bool>> Exists;
         public const int Length = 4;
-		private bool[] _tempExists;
-        public TerrainRenderar(List<int> heightMap, GroundTile groundTile, Tilemap tilemap)
+
+		private int[] _tempExists = new int[Length];
+        public TerrainRenderar(GroundTile groundTile, Tilemap tilemap)
         {
-            HeightMap = heightMap;
+          
             GroundTile = groundTile;
             Tilemap = tilemap;
-            _tempExists = new bool[Length];
             for (int i = 0; i < Length; i++)
             {
-                _tempExists = default;
+                _tempExists[i] = 0;
             }
+            Exists = default;
             Plunk(0);
-            ExistsLength = Exists.Count;
             GroundTile.Tiles = new TileBase[ExistsLength];
         }
-        public void Render()
+        public void Render(HeightMap heightMap)
         {
-            for (int i = 0; i < HeightMap.Count; i++)
+            for (int i = 0; i < heightMap.Width; i++)
             {
-                for (int j = HeightMap[i]; j >= 0; j--)
+                for (int j = heightMap[i]; j >= 0; j--)
                 {
                     SetTile(new Vector3Int(i, j, 0));
                 }
@@ -243,19 +237,26 @@ namespace Terrain
         }
         public void Plunk(int index)
         {
-            if (index >= Length)
+            if (index > Length - 1)
             {
-                Exists.Add(new CustomArray<bool>(_tempExists));
+                bool[] temp = new bool[Length];
+                
+                for(int i = 0; i < Length; i++)
+                {
+                    if(_tempExists[i] == 1)
+                    {
+                        temp[i] = true;
+                    }
+                    else temp[i] = false;
+                }
+                CustomArray<bool> customArrayTemp = new CustomArray<bool>(temp);
+                Exists.Add(customArrayTemp);
                 return;
             }
 
             for (int i = 0; i <= 1; i++)
             {
-                if (i == 0)
-                {
-                    _tempExists[index] = false;
-                }
-                else _tempExists[index] = true;
+                _tempExists[index] = i;
                 Plunk(index + 1);
             }
 
@@ -264,88 +265,6 @@ namespace Terrain
         {
             return Tilemap.GetTile(pos + shift) == null;
         }
-        //public void Render()
-        //{
-        //    bool[] isOtherTiles = new bool [8];
-
-        //    Vector3Int tilePos;
-        //    bool isLeft, isRight, isTop, isBottom; 
-        //    for (int i = 0; i < HeightMap.Count; i++)
-        //     {
-        //        for (int j = HeightMap[i]; j >= 0; j--)
-        //        {
-        //            tilePos = new Vector3Int(i, j, 0);
-        //            isLeft = IsNotNullTile(tilePos, Vector3Int.left);
-        //            isRight = IsNotNullTile(tilePos, Vector3Int.right);
-        //            isTop = IsNotNullTile(tilePos, Vector3Int.up);
-        //            isBottom = IsNotNullTile(tilePos, Vector3Int.down);
-        //            if (isLeft)
-        //            {
-        //                if(isRight)
-        //                {
-        //                    if(isTop)
-        //                    {
-        //                        if(isBottom)
-        //                        {
-
-        //                        }
-        //                        else
-        //                        {
-
-        //                        }
-        //                    }
-        //                    else if(isBottom)
-        //                    {
-
-        //                    }
-        //                    else
-        //                    {
-
-        //                    }
-        //                }
-        //                else if(isTop)
-        //                {
-        //                    if (isBottom)
-        //                    {
-
-        //                    }
-        //                    else if (isBottom)
-        //                    {
-
-        //                    }
-        //                    else
-        //                    {
-
-        //                    }
-        //                }
-        //                else if(isBottom)
-        //                {
-
-        //                }
-        //                Tilemap.SetTile(tilePos, Tiles.Left);
-        //            }
-        //            else if(isLeft)
-        //            {
-        //                Tilemap.SetTile(tilePos, Tiles.Middle);
-        //            }
-        //            else if(isTop)
-        //            {
-
-        //            }
-        //            else if(isBottom)
-        //            {
-
-        //            }
-        //        }
-        //     }
-
-
-        //    bool IsNotNullTile (Vector3Int pos, Vector3Int shift)
-        //    {
-        //        return Tilemap.GetTile(pos + shift) == null;
-        //    }
-
-        //}
     }
 }
 

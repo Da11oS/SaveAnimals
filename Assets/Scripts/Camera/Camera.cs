@@ -6,7 +6,7 @@ public class Camera : MonoBehaviour
 {
     public float DumpingSpeed;
     public Player Player;
-    public Vector3 DumpingForce;
+    public float DumpingForce;
     public static float Width
     {
         get
@@ -24,32 +24,31 @@ public class Camera : MonoBehaviour
     private Vector3 _playerPosition;
     private Vector3 _dumpingDirection;
     private Vector3 _dumpingTarget;
+    private Vector3 _startPosition;
     [SerializeField]
-    private float _maxHeight;
-    private float _positionZ;
+    public float MaxHeight;
     private Grid _grid;
     void Start()
     {
         Player = FindObjectOfType<Player>();
         _playerPosition = Player.transform.position;
-        _dumpingTarget = _playerPosition;
         _grid = FindObjectOfType<Grid>();
-        _positionZ = transform.position.z;
+        _startPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-            _playerPosition = Player.transform.position;
-            DumpingForce = Player.GetRunDirection();
-            Dumping();
+        _playerPosition = Player.transform.position;
+        _dumpingDirection = Player.GetPlayerMovementDirection();
+        Dumping();
     }
 
     private void Dumping()
     {
-        _dumpingTarget = _playerPosition; //+ DumpingForce;
-        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - 2 * _grid.cellSize.y + Height / 2, _maxHeight);
-        transform.position = Vector3.Lerp(transform.position, new Vector3(_dumpingTarget.x, _dampingY, _positionZ), DumpingSpeed * Time.deltaTime);
+        _dumpingTarget = _playerPosition + _dumpingDirection * DumpingForce;
+        float _dampingY = Mathf.Clamp(_dumpingTarget.y, _grid.transform.position.y - 2 * _grid.cellSize.y + Height / 2, MaxHeight);
+        transform.position = Vector3.Lerp(transform.position, new Vector3(_dumpingTarget.x, _dampingY, _startPosition.z), DumpingSpeed * Time.deltaTime);
     }
 
     private Vector3 GetDirection(Vector3 from, Vector3 target)

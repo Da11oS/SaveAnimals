@@ -25,7 +25,7 @@ public class Rocket : MonoBehaviour
         }
         if (_warning != null)
         {
-            if (Mathf.Abs(transform.position.x - _generator.WarningTransform.position.x) < 0.5)
+            if (Mathf.Abs(transform.position.x - _generator.WarningTransform.position.x) < 1)
             {
                 Destroy(_warning);
             }

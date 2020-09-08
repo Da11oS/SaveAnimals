@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerEnergy : MonoBehaviour
 {
     public event Action<float> OnEnergyChange;
-    public static float StartEnergy { get { return 1; } }
+    public static float StartEnergy { get => 1; }
     private float _energy;
     [Range(0, 1)] [SerializeField] private float _costRate;
     [SerializeField] private float _checkpointRadius;
@@ -22,16 +22,10 @@ public class PlayerEnergy : MonoBehaviour
         {
             ReduceEnergy(Time.deltaTime * _costRate);
         }
-        if (IsCheckPoint())
+        if(IsCheckpoint())
         {
-            ReduceEnergy(StartEnergy);
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<Rocket>() != null)
-        {
-            ReduceEnergy(0.1f);
+            print("Checkpoint");
+            SetEnergy(StartEnergy);
         }
     }
     public void ReduceEnergy(float damage)
@@ -40,10 +34,18 @@ public class PlayerEnergy : MonoBehaviour
             _energy -= damage;
         if (OnEnergyChange != null)
         {
-            OnEnergyChange.Invoke(damage);
+            OnEnergyChange.Invoke(_energy);
         }
     }
-    private bool IsCheckPoint()
+    private void SetEnergy(float value)
+    {
+        _energy = value;
+        if (OnEnergyChange != null)
+        {
+            OnEnergyChange.Invoke(_energy);
+        }
+    }
+    private bool IsCheckpoint()
     {
         return Physics2D.OverlapCircle(transform.position, _checkpointRadius, _energyRecoveryPointMask);
     }

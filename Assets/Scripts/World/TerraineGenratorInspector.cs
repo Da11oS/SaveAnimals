@@ -17,6 +17,8 @@ public class TerraineGenratorInspector : Editor
         if(GUILayout.Button("Generate"))
         {
             heightMap = target.Generate();
+            terrainRenderar = new TerrainRenderar(target.GroundTile, target.Tilemap);
+            terrainRenderar.Render(heightMap);
         }
 
         if (GUILayout.Button("Render"))

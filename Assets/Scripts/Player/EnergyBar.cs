@@ -11,12 +11,13 @@ public class EnergyBar : MonoBehaviour
     {
         _target = FindObjectOfType<PlayerEnergy>();
         _energyImage = GetComponent<Image>();
+        _target.OnEnergyChange += UpdateValue;
     }
 
 
     private void OnEnable()
     {
-        _target.OnEnergyChange += UpdateValue;
+        //_target.OnEnergyChange += UpdateValue;
     }
     private void OnDisable()
     {

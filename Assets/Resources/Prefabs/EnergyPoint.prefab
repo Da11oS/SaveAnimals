@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3290950144051367591}
   - component: {fileID: 2508791559480156527}
   - component: {fileID: 7306518721277248749}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4764,7 +4764,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6200546440382715331}
   - component: {fileID: 7544287888298855244}
-  m_Layer: 0
+  - component: {fileID: 5562632376248681996}
+  m_Layer: 10
   m_Name: EnergyPoint
   m_TagString: Checkpoint
   m_Icon: {fileID: 0}
@@ -4836,3 +4837,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &5562632376248681996
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8783491068654154127}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.28

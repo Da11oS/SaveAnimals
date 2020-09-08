@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _groundRadius;
     [SerializeField] private float _rotationLerpSpeed;
     [SerializeField] private LayerMask _groundMask;
+    private Vector3 _lastFramePosition;
     public Vector2 RunDirection
     {
         get; private set;
@@ -22,24 +23,30 @@ public class Player : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
         RunDirection = Vector3.right;
-    
+        _lastFramePosition = transform.position;
     }
 
     private void FixedUpdate()
     {
         Run(RunDirection);
         LerpRotation(new Quaternion(0, 0, 0, 1));
+        _lastFramePosition = transform.position;
+    }
+    public Vector2 GetPlayerMovementDirection()
+    {
+        return transform.position - _lastFramePosition;
     }
     public void Run(Vector3 direction)
     {
-        transform.Translate(direction * _speed * Time.deltaTime);
-      //  _rigidbody.velocity = Vector3.right * _speed * Time.deltaTime;
+        
+       // transform.Translate(direction * _speed * Time.deltaTime);
+        _rigidbody.velocity = new Vector2(direction.x * _speed * Time.deltaTime, _rigidbody.velocity.y);
     }
     public void Jump(Vector2 direction)
     {
         if (IsGround())
         {
-            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
             _rigidbody.AddForce(direction * _impulse, ForceMode2D.Impulse);
         }
     }

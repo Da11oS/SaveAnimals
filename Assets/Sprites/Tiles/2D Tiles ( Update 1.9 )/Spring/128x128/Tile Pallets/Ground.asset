@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Ground
+  m_EditorClassIdentifier: Assembly-CSharp:Terrain:GroundTile
+  Left: {fileID: 0}
+  Right: {fileID: 0}
+  Top: {fileID: 0}
+  Bottom: {fileID: 0}
+  MiddleTop: {fileID: 0}
+  MiddleBottom: {fileID: 0}
+  Middle: {fileID: 0}
+  TopLeft: {fileID: 0}
+  TopRight: {fileID: 0}
+  BottomRight: {fileID: 0}
+  BottomLeft: {fileID: 0}
+  Single: {fileID: 0}
+  Center: {fileID: 0}
+  Tiles: []
+  Tops:
+  - {fileID: 11400000, guid: 9605c064af9e45a489828b28f4a519c4, type: 2}
+  - {fileID: 11400000, guid: 1542e622c994c4f4d955c4f954ea7698, type: 2}
+  - {fileID: 11400000, guid: 3dd4617c6b74d7743a9585cf48460a57, type: 2}
+  - {fileID: 11400000, guid: f0f3dbd6bde805143b73a526e04a0177, type: 2}
+  - {fileID: 11400000, guid: 3f9c82a6c84846f48a29345e40fa64e8, type: 2}
+  Bottoms:
+  - {fileID: 11400000, guid: 503bfa4722fe6944c9f419db34051778, type: 2}
+  - {fileID: 11400000, guid: d30446a4149c9d449b5146e75507cfbe, type: 2}
+  - {fileID: 11400000, guid: 503bfa4722fe6944c9f419db34051778, type: 2}
+  - {fileID: 11400000, guid: ec6ff9f3286a43e478b5f9169a59de67, type: 2}
+  - {fileID: 11400000, guid: d30446a4149c9d449b5146e75507cfbe, type: 2}
+  BottomsTops:
+  - {fileID: 11400000, guid: 68a8014633e26cd4d844c7a77a2c44b7, type: 2}
+  - {fileID: 11400000, guid: 5b06cdd228856bc4da319449e251e1d3, type: 2}
+  - {fileID: 11400000, guid: 1ada27124fe9f324eb06ba1744086fe9, type: 2}
+  - {fileID: 11400000, guid: e6079c7deab5a1d47b675ceb8d683696, type: 2}
+  - {fileID: 11400000, guid: 1ada27124fe9f324eb06ba1744086fe9, type: 2}
+  Middles:
+  - {fileID: 11400000, guid: 81a70b9b135fa34458abb2f63a1ef77d, type: 2}
+  - {fileID: 11400000, guid: 81a70b9b135fa34458abb2f63a1ef77d, type: 2}
+  - {fileID: 11400000, guid: c6bcdaeac068dc441b6d9c2537125bda, type: 2}
+  - {fileID: 11400000, guid: 83b682bfe013eeb43ba716a15e41ef02, type: 2}
+  - {fileID: 11400000, guid: 81a70b9b135fa34458abb2f63a1ef77d, type: 2}

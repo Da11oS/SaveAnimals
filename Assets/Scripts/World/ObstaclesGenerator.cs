@@ -22,16 +22,22 @@ public class ObstaclesGenerator : MonoBehaviour
     private void Start()
     {
         _playerTransform = FindObjectOfType<Player>().transform;
+        _reduxTime = _time + Random.Range(_redaxMinTime, _redaxMaxTime);
         StartCoroutine(Generate());
     }
 
     IEnumerator Generate()
     {
+        int i = 0;
         while (true)
         {
-            _reduxTime = _time + Random.Range(_redaxMinTime, _redaxMaxTime);
-            Vector3 position = new Vector3(transform.position.x, _playerTransform.position.y + Random.Range(MinPositionY, MaxPositionY), _obstacle.transform.position.z);
-            Instantiate(_obstacle, position, _obstacle.transform.rotation);
+            if (i >= 1)
+            {
+                _reduxTime = _time + Random.Range(_redaxMinTime, _redaxMaxTime);
+                Vector3 position = new Vector3(transform.position.x, _playerTransform.position.y + Random.Range(MinPositionY, MaxPositionY), _obstacle.transform.position.z);
+                Instantiate(_obstacle, position, _obstacle.transform.rotation);
+            }
+            i++;
             yield return new WaitForSeconds(_reduxTime);
         }
     }

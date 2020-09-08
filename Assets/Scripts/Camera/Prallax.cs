@@ -7,7 +7,7 @@ public class Prallax : MonoBehaviour
     private Camera _camera;
     [SerializeField] private float _maxDistanceToCamera;
     [SerializeField] private float _parallaxSpeed;
-    private  Player _player;
+    private Player _player;
     [SerializeField] private float _length;
     private Vector3 _lastFrameCameraPosition;
     private static int _backgroundsCount = 0;
@@ -16,7 +16,7 @@ public class Prallax : MonoBehaviour
         _player = FindObjectOfType<Player>();
         _camera = FindObjectOfType<Camera>();
         _length = GetComponent<SpriteRenderer>().bounds.size.x;
-        
+
         _maxDistanceToCamera = _length + Camera.Width / 2;
         _lastFrameCameraPosition = _camera.transform.position;
         _backgroundsCount++;
@@ -25,14 +25,14 @@ public class Prallax : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsPassedCamera(transform))
+        if (IsPassedCamera(transform))
         {
             SwapBackgrounds();
         }
 
-        if(WasMove())
+        if (WasMove())
             Scroll();
-        transform.position = new Vector3(transform.position.x, _camera.transform.position.y, 0);
+       // transform.position = new Vector3(transform.position.x, _camera.transform.position.y, 0);
         _lastFrameCameraPosition = _camera.transform.position;
     }
     public void Scroll()
@@ -47,14 +47,15 @@ public class Prallax : MonoBehaviour
     }
     private bool IsPassedCamera(Transform child)
     {
-        if(_player.RunDirection.x > 0)
+        if (_player.RunDirection.x > 0)
         {
-           return _camera.transform.position.x - child.position.x > _maxDistanceToCamera;
+            return _camera.transform.position.x - child.position.x > _maxDistanceToCamera;
         }
         else return _camera.transform.position.x - child.position.x < -_maxDistanceToCamera;
     }
     private bool WasMove()
     {
-       return Mathf.Abs(_camera.transform.position.x - _lastFrameCameraPosition.x) > 0.01f;
+        return Mathf.Abs(_camera.transform.position.x - _lastFrameCameraPosition.x) > 0.01f;
     }
 }
+

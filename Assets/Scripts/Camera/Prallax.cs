@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class Prallax : MonoBehaviour
 {
-    private Camera _camera;
+    private CustomCamera _camera;
     [SerializeField] private float _maxDistanceToCamera;
     [SerializeField] private float _parallaxSpeed;
     private Player _player;
     [SerializeField] private float _length;
     private Vector3 _lastFrameCameraPosition;
     private static int _backgroundsCount = 0;
+    private Vector2 _position;
     void Start()
     {
         _player = FindObjectOfType<Player>();
-        _camera = FindObjectOfType<Camera>();
+        _camera = FindObjectOfType<CustomCamera>();
         _length = GetComponent<SpriteRenderer>().bounds.size.x;
-
-        _maxDistanceToCamera = _length + Camera.Width / 2;
+        _position = transform.position;
+        _maxDistanceToCamera = _length + _camera.Width / 2;
         _lastFrameCameraPosition = _camera.transform.position;
         _backgroundsCount++;
     }
@@ -32,7 +33,8 @@ public class Prallax : MonoBehaviour
 
         if (WasMove())
             Scroll();
-       // transform.position = new Vector3(transform.position.x, _camera.transform.position.y, 0);
+        // transform.position = new Vector3(transform.position.x, _camera.transform.position.y, 0);
+        SetPositionY();
         _lastFrameCameraPosition = _camera.transform.position;
     }
     public void Scroll()
@@ -56,6 +58,13 @@ public class Prallax : MonoBehaviour
     private bool WasMove()
     {
         return Mathf.Abs(_camera.transform.position.x - _lastFrameCameraPosition.x) > 0.01f;
+    }
+    private void SetPositionY()
+    {
+        float cameraPositionY = _camera.transform.position.y;
+        _position.y = Mathf.Clamp(transform.position.y, cameraPositionY - _camera.Height, cameraPositionY + _camera.Height);
+        _position.x = transform.position.x;
+        transform.position = _position;
     }
 }
 

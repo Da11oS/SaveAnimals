@@ -7,12 +7,13 @@ public class Danger : MonoBehaviour
     // Start is called before the first frame update
     [Range(0,1)]public float Damage;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.GetComponent<PlayerEnergy>() != null)
+        var target = collision.gameObject.GetComponent<PlayerEnergy>();
+        if (target != null)
         {
-            Debug.Log("Damage");
-            collision.gameObject.GetComponent<PlayerEnergy>().ReduceEnergy(Damage);
+            target.ReduceEnergy(Damage);
         }
     }
 }

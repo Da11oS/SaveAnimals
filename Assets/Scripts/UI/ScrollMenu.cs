@@ -16,20 +16,19 @@ public class ScrollMenu : MonoBehaviour
     [SerializeField] private Vector3 _startPosition;
     [SerializeField] private Vector2[] _panelPositions;
 
+    [SerializeField] private ScrollRect _scrollRect;
+
     private Vector2 _contectVector;
     private Vector2 _panelSize;
 
     private RectTransform _rectTransform;
-    private ScrollRect _scrollRect;
     private int _currentPanelId = 0;
     private bool _isScroll;
-    private BoxCollider2D _collider;
     private void Start()
     {
         _rectTransform = GetComponent<RectTransform>();
         _scrollRect = FindObjectOfType<ScrollRect>();
         _scrollRect.inertia = true;
-        _collider = GetComponent<BoxCollider2D>();
     }
     void FixedUpdate()
     {
@@ -55,7 +54,8 @@ public class ScrollMenu : MonoBehaviour
     }
     private void FixCurrentPanel()
     {
-        if (_rectTransform.anchoredPosition.x >= _panelPositions[0].x || _rectTransform.anchoredPosition.x <= _panelPositions[_panelPositions.Length - 1].x)
+        if (_rectTransform.anchoredPosition.x >= _panelPositions[0].x 
+            || _rectTransform.anchoredPosition.x <= _panelPositions[_panelPositions.Length - 1].x)
         { 
             _scrollRect.inertia = false;
         }
@@ -70,7 +70,7 @@ public class ScrollMenu : MonoBehaviour
                 _currentPanelId = i;
             }
             float scale = Mathf.Clamp(1 / (distance/ _positionOffset) * _scaleOffset, 0.5f , 1f);
-            CorrectPanelsSize(_panels[i], scale);
+            CorrectPanelsSize(_panels[i].transform, scale);
         }
         float velocity = Mathf.Abs(_scrollRect.velocity.x);
         if (velocity < 400 )
@@ -80,11 +80,11 @@ public class ScrollMenu : MonoBehaviour
         CorrectPanelPosition();
     }
 
-    private void CorrectPanelsSize(GameObject panel, float scale)
+    private void CorrectPanelsSize(Transform panel, float scale)
     {
-        float sizeX = Mathf.SmoothStep(panel.transform.localScale.x, scale, _scaleCorrectSpeed * Time.fixedDeltaTime);
-        float sizeY = Mathf.SmoothStep(panel.transform.localScale.y, scale, _scaleCorrectSpeed * Time.fixedDeltaTime);
-        panel.transform.localScale = new Vector2(sizeX, sizeY);
+        float sizeX = Mathf.SmoothStep(panel.localScale.x, scale, _scaleCorrectSpeed * Time.fixedDeltaTime);
+        float sizeY = Mathf.SmoothStep(panel.localScale.y, scale, _scaleCorrectSpeed * Time.fixedDeltaTime);
+        panel.localScale = new Vector2(sizeX, sizeY);
     }
     private void CorrectPanelPosition()
     {
@@ -107,6 +107,7 @@ public class ScrollMenu : MonoBehaviour
             print(_panelSize);
             SetPanelPosition(_panels[i - 1], _panels[i]);
             _panelPositions[i] = -_panels[i].transform.localPosition;
+            
         }
     }
     private void SetPanelPosition(GameObject lastPanel, GameObject panel)

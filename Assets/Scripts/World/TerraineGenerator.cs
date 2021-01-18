@@ -11,19 +11,22 @@ public class TerraineGenerator : MonoBehaviour
     public int Frequency, Noise;
     public GroundTile GroundTile;
     public Tilemap Tilemap;
+    public Energy IEnergy;
 
-    [SerializeField]
-    private TileBase _grass;
-    [SerializeField]
-    private int _energyPointFriqency;
-    [SerializeField]
-    private GameObject _energyPoint;
-    GameObject _checkpointsParents;
+    [System.Serializable]
+    public class Energy {
+        public TileBase Grass;
+        [SerializeField]
+        public int EnergyPointFriqency;
+        [SerializeField]
+        public GameObject EnergyPoint;
+        public GameObject CheckpointsParents;
+    }
     public HeightMap Generate()
     {
         HeightMap heightMap = new HeightMap(Width);
-        _checkpointsParents = new GameObject("Checkpoints");
-        _checkpointsParents.transform.position = Vector3.zero;
+        IEnergy.CheckpointsParents = new GameObject("Checkpoints");
+        IEnergy.CheckpointsParents.transform.position = Vector3.zero;
 
         int groundHeight = 0;
         int groundZeroCount = 0;
@@ -56,36 +59,32 @@ public class TerraineGenerator : MonoBehaviour
             }
             heightMap.SetHeight(x, groundHeight);
 
-            if(x % _energyPointFriqency == 0)
+            if(x % IEnergy.EnergyPointFriqency == 0)
             {
-                EnergyPointsGenerate(groundHeight, x, _checkpointsParents.transform);
+                EnergyPointGenerate(groundHeight, x, IEnergy.CheckpointsParents.transform);
             }
         }
-        //for (int i = 0; i < Width; i++)//var height in _heightMap)
-        //{
-        //    if (heightMap[i] >= 0)
-        //    {
-        //       
-        //        for (int j = heightMap[i]; j >= 0; j--)
-        //        {
-        //            Tilemap.SetTile(new Vector3Int(i, j, 0), _grass);
-        //        }
-        //    }
-        //}
         return heightMap;
       
     }
-    public void EnergyPointsGenerate(int height, int width, Transform parent)
+    public void EnergyPointGenerate(int height, int width, Transform parent)
     {
             Vector3Int position = new Vector3Int(width, height + 2, 0);
-            Instantiate(_energyPoint, Tilemap.CellToWorld(position), Quaternion.identity, parent);
+            Instantiate(IEnergy.EnergyPoint, Tilemap.CellToWorld(position), Quaternion.identity, parent);
+    }
+    public void EnergyPointsGenerate(HeightMap map)
+    {
+        for(int i = 0;  i <= map.Count - IEnergy.EnergyPointFriqency; i+=IEnergy.EnergyPointFriqency)
+        {
+            EnergyPointGenerate(map[i] + 2, i, IEnergy.CheckpointsParents.transform);
+        }
     }
     public void ClearTerraine(HeightMap heightMap)
     {
         heightMap.Clear();
         Tilemap.ClearAllTiles();
 #if UNITY_EDITOR
-            DestroyImmediate(_checkpointsParents);
+            DestroyImmediate(IEnergy.CheckpointsParents);
 #else
           foreach(var child in FindObjectsOfType<EnergyRecovery>())
         {
@@ -98,7 +97,7 @@ namespace Terrain
 {
     public class HeightMap
     {
-        private int _count { set => _heights.Sum(); }
+        public int Count {get => _heights.Sum(); }
         private int _width;
         private int[] _heights;
 

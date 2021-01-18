@@ -9,9 +9,13 @@ public class OpenScene : MonoBehaviour
     public string SceneName;
     private void OnMouseUpAsButton()
     {
-        if (SceneName.Length > 0)
-            SceneManager.LoadScene(SceneName);
-        else Debug.Log("Is don't open scene!");
+        OpenNewScene(SceneName);
 
+    }
+    public void OpenNewScene(string name)
+    {
+        if (name.Length > 0)
+            SceneManager.LoadScene(name);
+        else Debug.Log("Is don't open scene!");
     }
 }

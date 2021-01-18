@@ -10,6 +10,7 @@ public class PlayerEnergy : MonoBehaviour
     [Range(0, 1)] [SerializeField] private float _costRate;
     [SerializeField] private float _checkpointRadius;
     [SerializeField] private LayerMask _energyRecoveryPointMask;
+    private Collider2D _checkpointCollider;
     void Start()
     {
         _energy = StartEnergy;
@@ -18,19 +19,20 @@ public class PlayerEnergy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _checkpointCollider = Physics2D.OverlapCircle(transform.position, _checkpointRadius, _energyRecoveryPointMask);
         if (_energy > 0)
         {
             ReduceEnergy(Time.deltaTime * _costRate);
         }
         if(IsCheckpoint())
         {
-            print("Checkpoint");
+            Destroy(_checkpointCollider.gameObject);
             SetEnergy(StartEnergy);
         }
     }
     public void ReduceEnergy(float damage)
     {
-        if (damage < 1)
+        if (damage <= 1)
             _energy -= damage;
         if (OnEnergyChange != null)
         {
@@ -47,6 +49,8 @@ public class PlayerEnergy : MonoBehaviour
     }
     private bool IsCheckpoint()
     {
-        return Physics2D.OverlapCircle(transform.position, _checkpointRadius, _energyRecoveryPointMask);
+
+        return _checkpointCollider;
     }
+    
 }

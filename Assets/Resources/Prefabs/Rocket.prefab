@@ -144,10 +144,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6362619869093544435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3af75817d561e1e45882c19cb16f27fd, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e24306ef69c32b43b43e310680aaca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
+  Speed: 0
+  StartPosition: {x: 0, y: 0}
+  Direction: {x: 0, y: 0}
+  _generator: {fileID: 0}
+  _warningInstance: {fileID: 6070740288375507017, guid: 8f766e9968eff624a811a03911d68639,
+    type: 3}
 --- !u!114 &8341250849813299262
 MonoBehaviour:
   m_ObjectHideFlags: 0

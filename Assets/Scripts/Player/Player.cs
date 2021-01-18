@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _groundRadius;
     [SerializeField] private float _rotationLerpSpeed;
     [SerializeField] private LayerMask _groundMask;
+    private CustomCamera _camera;
     private Vector3 _lastFramePosition;
     public Vector2 RunDirection
     {
@@ -22,8 +23,9 @@ public class Player : MonoBehaviour
         if(GetComponent<Rigidbody2D>()!=null)
         _rigidbody = GetComponent<Rigidbody2D>();
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
-        RunDirection = Vector3.right;
+        RunDirection = Vector3.zero;
         _lastFramePosition = transform.position;
+        _camera = FindObjectOfType<CustomCamera>();
     }
 
     private void FixedUpdate()

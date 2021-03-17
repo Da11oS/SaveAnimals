@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7bf6b6a1e0c0df478b9b5a1bc71c9e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _costRate: 0.11
+  _costRate: 0.007
   _checkpointRadius: 2.08
   _energyRecoveryPointMask:
     serializedVersion: 2

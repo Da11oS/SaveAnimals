@@ -6,7 +6,7 @@ using System.ComponentModel;
 abstract public class LevelType: ILevel
 {
     public Level Parent;
-    public Levels Levels { get => Levels.Instance; }
+   // public Levels Levels { get => Levels.Instance; }
     public LevelType(Level parent)
     {
         Parent = parent;
@@ -31,15 +31,17 @@ public class OpenLevel : LevelType
     }
     override public void Open()
     {
-        Parent.gameObject.SetActive(true);
+      //  Parent.gameObject.SetActive(true);
     }
     override public void Close()
     {
-        Parent.gameObject.SetActive(false);
+      //  Parent.gameObject.SetActive(false);
     }
     override public void Finish()
     {
-        Levels.SetLevelIsOpen(Parent.Id + 1);
+        //       
+
+      //  Levels.SetLevelIsOpen(Parent.Id + 1);
     }
 };
 

@@ -1,17 +1,25 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelFinish : MonoBehaviour
 {
+    Action OnChangeLevel;
     // Start is called before the first frame update
-    private Level _parentLevel { get => GetComponentInParent<Level>(); }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private Level _parentLevel;
+    private void Start()
     {
-        
-        if(collision.gameObject.GetComponent<Player>() != null)
+        _parentLevel = GetComponentInParent<Level>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<Player>() != null)
         {
-            //_parentLevel.CurrentType.Finish();
+            Location.Instance.SetLevelStatus(_parentLevel.Data.Id + 1, LockStatus.Unlocked);
+            Location.Instance.OpenLevel(_parentLevel.Data.Id + 1);
+            Debug.Log(_parentLevel.Data.Id + 1 + " Is finish");
         }
     }
 }

@@ -16,11 +16,11 @@ public class MoveButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         IsClick = true;
         _player.LerpRunDirection(RunDirection);
-      
     }
     public void OnPointerUp(PointerEventData pointerEventData)
     {
-        _player.Jump(JumpDirection);
+        if (_player.IsGround())
+            _player.Jump(JumpDirection);
         IsClick = false;
     }
 

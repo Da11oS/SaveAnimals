@@ -1,39 +1,34 @@
 ﻿using System.Collections;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    
-    public bool IsOpen;
-    public bool IsActive;
-    public int Id;
-
-    public LevelStart Begin { get => GetComponentInChildren<LevelStart>(); }
-    public LevelFinish End { get => GetComponentInChildren<LevelFinish>(); }
-
-    public LeftBottomBorder LeftBottomBorder { get => GetComponentInChildren<LeftBottomBorder>(); }
-    public RightUpperBorder RightUpperBorder { get => GetComponentInChildren<RightUpperBorder>(); }
-
-    public static int OpenCount;
-    public Transform[] Childs;
+    public LevelData Data;
+    [Header(" ")]
+    public LevelStart Begin;
+    public LevelFinish End;
+    public Border Border;
+    public EnergyPoint[] EnergyPoints;
     public void Awake()
     {
-      
+        Border = GetComponentInChildren<Border>();
+        Begin = GetComponentInChildren<LevelStart>();
+        End = GetComponentInChildren<LevelFinish>();
+        EnergyPoints = GetComponentsInChildren<EnergyPoint>(); 
+    }
+    public void Start()
+    {
+        Data.CheckOnWork = "Is working;";
     }
     public void SetActive(bool isActive)
     {
-        IsActive = isActive;
-        Childs = gameObject.GetComponentsInChildren<Transform>();
+        Data.IsActive = isActive;
         if (isActive)
-            OpenCount++;
-        else OpenCount--;
-        
-        for(int i = 0; i < Childs.Length;i++)
         {
-            if(Childs[i] != transform)
-                Childs[i].gameObject.SetActive(isActive);
+            Location.Instance.Data.OpenCount++;
         }
+        else Location.Instance.Data.OpenCount--;
+        gameObject.SetActive(isActive);
     }
 }

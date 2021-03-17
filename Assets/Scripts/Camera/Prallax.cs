@@ -57,12 +57,12 @@ public class Prallax : MonoBehaviour
     }
     private bool WasMove()
     {
-        return Mathf.Abs(_camera.transform.position.x - _lastFrameCameraPosition.x) > 0.01f;
+        return Mathf.Abs(_camera.transform.position.x - _lastFrameCameraPosition.x) > 0.05f;
     }
     private void SetPositionY()
     {
         float cameraPositionY = _camera.transform.position.y;
-        _position.y = Mathf.Clamp(transform.position.y, cameraPositionY - _camera.Height, cameraPositionY + _camera.Height);
+        _position.y = Mathf.Clamp(transform.position.y, cameraPositionY - _camera.Height / 2, cameraPositionY + _camera.Height / 2);
         _position.x = transform.position.x;
         transform.position = _position;
     }

@@ -89,17 +89,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DumpingSpeed: 0
-  Player: {fileID: 0}
   DumpingForce: 0
   StartDumpingForce: 0
-  FixeDumpingPosition: {x: 0, y: 0, z: 0}
-  _grid: {fileID: 0}
-  ThisBorder:
-    LeftBottom: {fileID: 0}
-    RightUpper: {fileID: 0}
-    LeftUpper: {fileID: 0}
-    RightBottom: {fileID: 0}
-    CubeSize: {x: 0, y: 0, z: 0}
+  Player: {fileID: 0}
+  Width: 0
+  Height: 0
+  CameraArea: {x: 0, y: 0}
+  Border: {fileID: 0}
 --- !u!1001 &5895653697368295034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107,6 +103,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8429517485732951537}
     m_Modifications:
+    - target: {fileID: 4139941538434176285, guid: b815594702846b34a94c7d9efb277c27,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4139941539250185999, guid: b815594702846b34a94c7d9efb277c27,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4139941539418439932, guid: b815594702846b34a94c7d9efb277c27,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -50
+      objectReference: {fileID: 0}
     - target: {fileID: 4139941539738720968, guid: b815594702846b34a94c7d9efb277c27,
         type: 3}
       propertyPath: m_LocalPosition.x

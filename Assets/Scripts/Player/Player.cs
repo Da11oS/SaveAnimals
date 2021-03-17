@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float LerpSpeed;
+    public static Player Instance;
     private Rigidbody2D _rigidbody;
     [SerializeField] private float _speed;
     [SerializeField] private float _impulse;
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        SetInstance();
         if(GetComponent<Rigidbody2D>()!=null)
         _rigidbody = GetComponent<Rigidbody2D>();
         else _rigidbody = gameObject.AddComponent<Rigidbody2D>();
@@ -31,7 +33,10 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         Run(RunDirection);
-        LerpRotation(new Quaternion(0, 0, 0, 1));
+        if(IsGround())
+        {
+            LerpRotation(new Quaternion(0, 0, 0, 1));
+        }
         _lastFramePosition = transform.position;
     }
     public Vector2 GetPlayerMovementDirection()
@@ -46,11 +51,9 @@ public class Player : MonoBehaviour
     }
     public void Jump(Vector2 direction)
     {
-        if (IsGround())
-        {
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
             _rigidbody.AddForce(direction * _impulse, ForceMode2D.Impulse);
-        }
+ 
     }
     public void LerpRunDirection(Vector2 to)
     {
@@ -73,9 +76,20 @@ public class Player : MonoBehaviour
         }
     }
 
-    private bool IsGround()
+    public bool IsGround()
     {
         return Physics2D.OverlapCircle(transform.position + Vector3.down, _groundRadius, _groundMask);
+    }
+    private void SetInstance()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 }
 

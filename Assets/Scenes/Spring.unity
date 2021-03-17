@@ -19171,6 +19171,7 @@ MonoBehaviour:
     EnergyPointFriqency: 0
     EnergyPoint: {fileID: 0}
     CheckpointsParents: {fileID: 0}
+  StartGroundHeight: 0
 --- !u!1001 &325967496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60284,6 +60285,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayModeCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5348215556786248336, guid: 5f59c1840f05e2743adfec71df5e7a01,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f59c1840f05e2743adfec71df5e7a01, type: 3}

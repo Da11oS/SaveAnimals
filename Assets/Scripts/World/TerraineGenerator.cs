@@ -12,7 +12,7 @@ public class TerraineGenerator : MonoBehaviour
     public GroundTile GroundTile;
     public Tilemap Tilemap;
     public Energy IEnergy;
-
+    public int StartGroundHeight;
     [System.Serializable]
     public class Energy {
         public TileBase Grass;
@@ -28,7 +28,7 @@ public class TerraineGenerator : MonoBehaviour
         IEnergy.CheckpointsParents = new GameObject("Checkpoints");
         IEnergy.CheckpointsParents.transform.position = Vector3.zero;
 
-        int groundHeight = 0;
+        int groundHeight = StartGroundHeight;
         int groundZeroCount = 0;
         int groundOver10Count = 0;
         heightMap[0] = 0; heightMap[Width - 1] = 0;

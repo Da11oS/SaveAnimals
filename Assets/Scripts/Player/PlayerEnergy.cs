@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerEnergy : MonoBehaviour
 {
@@ -26,7 +27,8 @@ public class PlayerEnergy : MonoBehaviour
         }
         if(IsCheckpoint())
         {
-            Destroy(_checkpointCollider.gameObject);
+
+            _checkpointCollider.gameObject.SetActive(false);
             SetEnergy(StartEnergy);
         }
     }
@@ -34,11 +36,18 @@ public class PlayerEnergy : MonoBehaviour
     {
         if (damage <= 1)
             _energy -= damage;
+        if(_energy <= 0)
+        {
+            
+            Location.Instance.Restart();
+            _energy = StartEnergy;
+        }
         if (OnEnergyChange != null)
         {
             OnEnergyChange.Invoke(_energy);
         }
     }
+
     private void SetEnergy(float value)
     {
         _energy = value;

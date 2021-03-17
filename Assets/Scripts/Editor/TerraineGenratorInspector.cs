@@ -7,6 +7,7 @@ using Terrain;
 [CustomEditor(typeof(TerraineGenerator))]
 public class TerraineGenratorInspector : Editor
 {
+
     public override void OnInspectorGUI()
     {
 

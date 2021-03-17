@@ -43,6 +43,5 @@ public class RocketWarning : MonoBehaviour
         _rectTransform.anchorMin = Vector2.one / 2;
         _canvasRect = _canvas.GetComponent<RectTransform>();
         SetParent(_canvasRect);
-
     }
 }

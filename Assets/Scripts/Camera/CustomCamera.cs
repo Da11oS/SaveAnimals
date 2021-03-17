@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class CustomCamera : MonoBehaviour
@@ -12,26 +10,28 @@ public class CustomCamera : MonoBehaviour
     public float StartDumpingForce;
     [HideInInspector]
     public Player Player;
-
+    public static CustomCamera Instance;
 
     [HideInInspector]
     public float Width, Height;
     public Vector2 CameraArea;
-    private Border _border;
+    public Border Border;
+
     private Vector3 _dumpingDirection;
     private Vector3 _dumpingTarget;
     private Vector3 _startPosition;
     private Camera _camera;
 
+
     void Start()
     {
+        SetInstance();
         _camera = GetComponent<Camera>();
         Width = PixelToUnit(Screen.width);
         Height = PixelToUnit(Screen.height);
         StartDumpingForce = DumpingForce;
         Player = FindObjectOfType<Player>();
         _startPosition = transform.position;
-        _border = FindObjectOfType<Border>();
     }
 
     // Update is called once per frame
@@ -58,12 +58,23 @@ public class CustomCamera : MonoBehaviour
     }
     private Vector3 GetLimitPosition()
     {
-        return new Vector3(Mathf.Clamp(transform.position.x, _border.LeftBottom.x + Width/2, _border.RightBottom.x - Width/2),
-            Mathf.Clamp(transform.position.y, _border.LeftBottom.y + Height/2, _border.RightUpper.y - Height/2), _startPosition.z);
+        return new Vector3(Mathf.Clamp(transform.position.x, Border.LeftBottom.x + Width/2, Border.RightBottom.x - Width/2),
+            Mathf.Clamp(transform.position.y, Border.LeftBottom.y + Height/2, Border.RightUpper.y - Height/2), _startPosition.z);
     }
 
     public float PixelToUnit(float pixel)
     {
         return (pixel * _camera.orthographicSize * 2) / _camera.pixelHeight;
+    }
+    private void SetInstance()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 }
